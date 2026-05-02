@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>T Marz — Free Trading Community</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--blue:#1A5CFF;--blue-l:#4D85FF;--blue-glow:rgba(26,92,255,0.22);--bg:#06080F;--bg1:#0A0D18;--card:#111520;--card2:#161B2E;--b:rgba(255,255,255,0.07);--b2:rgba(255,255,255,0.12);--b-blue:rgba(26,92,255,0.28);--txt:#EEF0FA;--muted:#5A6080;--h:'Space Grotesk',sans-serif;--body:'Inter',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--txt);font-family:var(--body);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+img{display:block;max-width:100%}
+
+/* CONTAINER */
+.container{width:100%;max-width:1200px;margin:0 auto;padding:0 20px}
+
+/* SHARED */
+.sec-tag{font-size:.69rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--blue-l);margin-bottom:10px;display:block}
+.sec-h{font-family:var(--h);font-size:clamp(1.75rem,4vw,2.8rem);font-weight:700;line-height:1.08;letter-spacing:-.03em;margin-bottom:12px}
+.sec-h .a{color:var(--blue-l)}
+.sec-body{font-size:.93rem;color:var(--muted);line-height:1.7}
+.r{opacity:0;transform:translateY(16px);transition:opacity .55s,transform .55s}
+.r.on{opacity:1;transform:none}
+[data-d="1"]{transition-delay:.08s}[data-d="2"]{transition-delay:.16s}[data-d="3"]{transition-delay:.24s}
+
+/* BTN */
+.btn-main{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;background:var(--blue);color:#fff;font-family:var(--h);font-weight:700;font-size:.92rem;letter-spacing:.04em;text-transform:uppercase;padding:17px 28px;border-radius:10px;box-shadow:0 0 32px var(--blue-glow),0 4px 14px rgba(0,0,0,.4);transition:background .2s,transform .15s;position:relative;overflow:hidden;cursor:pointer}
+.btn-main::before{content:'';position:absolute;top:0;left:-80%;width:55%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.16),transparent);transform:skewX(-15deg);transition:left .55s}
+.btn-main:hover::before{left:120%}
+.btn-main:hover{background:#2a6bff}
+.btn-main:active{transform:scale(.98)}
+.btn-main svg{width:20px;height:20px;flex-shrink:0}
+
+/* SPOTS */
+.spots-block{width:100%}
+.spots-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.spots-lbl{font-size:.7rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:center;gap:5px}
+.spots-lbl .w{color:#F59E0B}
+.spots-num{font-family:var(--h);font-size:.76rem;font-weight:700}
+.spots-track{height:5px;background:var(--b);border-radius:5px;overflow:hidden}
+.spots-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--blue-l));border-radius:5px;width:0;transition:width 1.5s cubic-bezier(.4,0,.2,1)}
+
+/* LIVE DOT */
+.live-dot{width:7px;height:7px;border-radius:50%;background:#22C55E;box-shadow:0 0 7px #22C55E;animation:blink 1.8s ease infinite;flex-shrink:0}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:200;background:rgba(6,8,15,.94);backdrop-filter:blur(18px);border-bottom:1px solid var(--b)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
+.logo{font-family:var(--h);font-size:1.2rem;font-weight:700;letter-spacing:-.02em}
+.logo span{color:var(--blue-l)}
+.nav-links{display:none;align-items:center;gap:32px}
+.nav-links a{font-size:.82rem;font-weight:500;color:var(--muted);transition:color .2s}
+.nav-links a:hover{color:var(--txt)}
+.nav-cta{background:var(--blue);color:#fff;font-family:var(--h);font-size:.78rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:10px 22px;border-radius:8px;transition:background .2s,transform .15s;white-space:nowrap}
+.nav-cta:hover{background:#2a6bff}
+.nav-cta:active{transform:scale(.97)}
+
+/* HERO */
+.hero{padding:36px 0 52px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:700px;height:500px;background:radial-gradient(ellipse,rgba(26,92,255,.1) 0%,transparent 65%);pointer-events:none;z-index:0}
+.hero-inner{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center;gap:0}
+.hero-left{width:100%;display:flex;flex-direction:column;align-items:center;margin-bottom:32px}
+.hero-right{width:100%}
+.proof-pill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--b2);border-radius:6px;padding:6px 14px;font-size:.71rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:20px}
+.hero h1{font-family:var(--h);font-size:2rem;font-weight:700;line-height:1.1;letter-spacing:-.03em;margin-bottom:16px;width:100%}
+.hero h1 .hl{color:var(--blue-l)}
+.hero-sub{font-size:.91rem;color:var(--muted);line-height:1.68;max-width:480px;margin:0 auto 24px;font-weight:400}
+.hero-cta-group{width:100%;max-width:440px;display:flex;flex-direction:column;gap:12px}
+
+/* VIDEO */
+.video-frame{border-radius:14px;overflow:hidden;border:1px solid rgba(26,92,255,.28);background:#000;box-shadow:0 0 0 1px rgba(26,92,255,.07),0 20px 60px rgba(0,0,0,.8);position:relative}
+.vk{position:absolute;width:17px;height:17px;border-color:var(--blue-l);border-style:solid;border-width:0;z-index:2}
+.vk.a{top:-1px;left:-1px;border-top-width:2px;border-left-width:2px;border-radius:2px 0 0 0}
+.vk.b{top:-1px;right:-1px;border-top-width:2px;border-right-width:2px;border-radius:0 2px 0 0}
+.vk.c{bottom:-1px;left:-1px;border-bottom-width:2px;border-left-width:2px;border-radius:0 0 0 2px}
+.vk.d{bottom:-1px;right:-1px;border-bottom-width:2px;border-right-width:2px;border-radius:0 0 2px 0}
+.video-frame video{width:100%;display:block;aspect-ratio:16/9;object-fit:cover}
+.hero-video-glow{position:relative}
+.hero-video-glow::before{content:'';position:absolute;inset:-20px;background:radial-gradient(ellipse,rgba(26,92,255,.12) 0%,transparent 65%);border-radius:22px;pointer-events:none;z-index:-1}
+.video-meta{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:12px}
+.vmeta{display:inline-flex;align-items:center;gap:5px;background:var(--card);border:1px solid var(--b);border-radius:6px;padding:5px 11px;font-size:.69rem;color:var(--muted);font-weight:500}
+.vmeta em{font-style:normal;color:var(--blue-l)}
+
+/* SECTIONS */
+.sec{padding:64px 0}
+.sec.alt{background:var(--bg1)}
+
+/* FEATURES */
+.feat-header{margin-bottom:32px}
+.feat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.feat-card{background:var(--card);border:1px solid var(--b);border-radius:14px;padding:20px 18px;display:flex;flex-direction:column;gap:11px;transition:border-color .25s,transform .2s,box-shadow .2s;position:relative;overflow:hidden;cursor:default}
+.feat-card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(26,92,255,.05) 0%,transparent 55%);opacity:0;transition:opacity .3s}
+.feat-card:hover::before{opacity:1}
+.feat-card:hover{border-color:var(--b-blue);transform:translateY(-2px);box-shadow:0 10px 32px rgba(0,0,0,.32)}
+.feat-ico{width:44px;height:44px;border-radius:11px;background:rgba(26,92,255,.1);border:1px solid rgba(26,92,255,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .25s,border-color .25s}
+.feat-card:hover .feat-ico{background:rgba(26,92,255,.18);border-color:rgba(26,92,255,.38)}
+.feat-ico svg{width:22px;height:22px;stroke:var(--blue-l);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.feat-card h3{font-size:.86rem;font-weight:700;letter-spacing:-.01em;line-height:1.3}
+.feat-card p{font-size:.79rem;color:var(--muted);line-height:1.58;flex:1}
+.feat-free{display:inline-flex;align-items:center;gap:4px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);border-radius:5px;padding:3px 9px;font-size:.66rem;font-weight:700;color:#22C55E;letter-spacing:.04em;align-self:flex-start}
+.feat-cta-row{display:flex;flex-direction:column;align-items:center;gap:12px;margin-top:36px}
+.feat-cta-row .btn-main,.feat-cta-row .spots-block{max-width:440px}
+
+/* ABOUT */
+.about-card{background:var(--card);border:1px solid var(--b);border-radius:16px;overflow:hidden;margin-top:32px;display:flex;flex-direction:column}
+.about-img{width:100%;aspect-ratio:4/3;object-fit:cover;object-position:center top;display:block}
+.about-img-err{width:100%;aspect-ratio:3/4;background:var(--card2);display:none;align-items:center;justify-content:center;font-size:4rem;color:var(--muted)}
+.about-body{padding:24px 22px}
+.about-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.about-name{font-family:var(--h);font-size:1.35rem;font-weight:700;letter-spacing:-.02em;line-height:1.1}
+.about-role{font-size:.76rem;color:var(--muted);margin-top:4px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.about-role .dot{width:3px;height:3px;border-radius:50%;background:var(--muted)}
+.about-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(26,92,255,.1);border:1px solid rgba(26,92,255,.25);border-radius:7px;padding:7px 13px;font-size:.72rem;font-weight:700;color:var(--blue-l);white-space:nowrap;flex-shrink:0}
+.about-body p{font-size:.88rem;color:var(--muted);line-height:1.76;margin-bottom:12px}
+.about-body p strong{color:var(--txt);font-weight:600}
+.about-quote{background:var(--card2);border-left:2px solid var(--blue);border-radius:0 8px 8px 0;padding:13px 16px;margin:16px 0;font-size:.87rem;font-style:italic;color:var(--txt);opacity:.82;line-height:1.5}
+.about-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:18px}
+.a-stat{background:var(--card2);border:1px solid var(--b);border-radius:10px;padding:14px 10px;text-align:center}
+.a-stat-n{font-family:var(--h);font-size:1.45rem;font-weight:700;color:var(--blue-l);line-height:1;letter-spacing:-.03em}
+.a-stat-l{font-size:.62rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-top:4px}
+
+/* FINAL CTA */
+.final-sec{padding:64px 0;text-align:center;position:relative;overflow:hidden}
+.final-sec::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:600px;height:350px;background:radial-gradient(circle,rgba(26,92,255,.07),transparent 65%);pointer-events:none}
+.final-inner{position:relative;z-index:1}
+.final-inner .sec-h{font-size:clamp(1.8rem,4vw,3rem);margin-bottom:12px}
+.final-inner .sec-body{max-width:400px;margin:0 auto 28px}
+.final-cta-group{display:flex;flex-direction:column;align-items:center;gap:12px}
+.final-cta-group .btn-main,.final-cta-group .spots-block{max-width:440px}
+.trust-row{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-top:18px}
+.trust-item{font-size:.73rem;color:var(--muted);display:flex;align-items:center;gap:4px}
+.trust-item span{color:#22C55E}
+
+/* FOOTER */
+footer{border-top:1px solid var(--b);padding:24px 0;text-align:center}
+.foot-logo{font-family:var(--h);font-size:1.15rem;font-weight:700;letter-spacing:-.02em;margin-bottom:6px}
+.foot-logo span{color:var(--blue-l)}
+footer p{font-size:.7rem;color:var(--muted)}
+
+/* TOASTS */
+#toasts{position:fixed;bottom:18px;left:14px;z-index:9000;display:flex;flex-direction:column;gap:7px;pointer-events:none}
+.toast{background:var(--card2);border:1px solid var(--b2);border-radius:11px;padding:10px 13px;display:flex;align-items:center;gap:9px;max-width:260px;box-shadow:0 8px 28px rgba(0,0,0,.7);transform:translateX(-110%);opacity:0;transition:transform .4s cubic-bezier(.34,1.4,.64,1),opacity .35s;pointer-events:auto}
+.toast.show{transform:none;opacity:1}
+.t-ico{font-size:1.2rem;flex-shrink:0}
+.t-body strong{font-size:.75rem;display:block;color:var(--txt)}
+.t-body span{font-size:.69rem;color:var(--muted)}
+
+/* ═══ TABLET 768px ═══ */
+@media(min-width:768px){
+  .container{padding:0 36px}
+  .nav-links{display:flex}
+  .logo{font-size:1.35rem}
+  .about-card{flex-direction:row}
+  .about-img{width:320px;min-width:320px;aspect-ratio:auto;height:auto;object-position:center center;align-self:stretch;flex-shrink:0}
+  .about-img-err{width:320px;min-width:320px;aspect-ratio:auto;height:100%}
+  .about-body{padding:32px 30px;flex:1}
+  .feat-grid{gap:14px}
+}
+
+/* ═══ DESKTOP 1024px ═══ */
+@media(min-width:1024px){
+  .container{padding:0 52px}
+  /* Hero — centered, expanded */
+  .hero{padding:72px 0 80px}
+  .hero::before{width:900px;height:600px}
+  .hero-inner{align-items:center;text-align:center}
+  .hero-left{align-items:center;margin-bottom:36px}
+  .hero h1{font-size:3.6rem;line-height:1.04;margin-bottom:20px}
+  .hero-sub{font-size:1.05rem;max-width:580px;margin:0 auto 28px}
+  .hero-cta-group{max-width:480px;margin:0 auto}
+  .hero-right{max-width:820px;margin:0 auto}
+  .video-meta{justify-content:center}
+  /* Features 3-col */
+  .feat-grid{grid-template-columns:repeat(3,1fr);gap:16px}
+  .feat-card{padding:24px 22px;gap:13px}
+  .feat-card h3{font-size:.93rem}
+  .feat-card p{font-size:.84rem}
+  .feat-ico{width:48px;height:48px}
+  .feat-ico svg{width:24px;height:24px}
+  /* About */
+  .about-img{width:380px;min-width:380px}
+  .about-name{font-size:1.6rem}
+  .about-body p{font-size:.93rem}
+}
+
+/* ═══ LARGE 1280px ═══ */
+@media(min-width:1280px){
+  .container{padding:0 64px}
+  .hero h1{font-size:4rem}
+  .hero-sub{max-width:620px}
+  .hero-right{max-width:900px}
+  .about-img{width:440px;min-width:440px}
+}
+</style>
+</head>
+<body>
+<div id="toasts"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="container">
+    <div class="nav-inner">
+      <div class="logo">T<span>Marz</span></div>
+      <div class="nav-links">
+        <a href="#features">What You Get</a>
+        <a href="#about">About</a>
+      </div>
+      <a href="https://t.me/+qgTfmeQD1uIyN2Nk" target="_blank" class="nav-cta">Join Free →</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-inner">
+      <div class="hero-left">
+        <div class="proof-pill"><div class="live-dot"></div>5,000+ people already inside</div>
+        <h1>I Went From a 9-5<br>to <span class="hl">7 Figures</span> in 2 Years<br>— Learn How for <span class="hl">FREE</span></h1>
+        <p class="hero-sub">I built a system so clear and repeatable, I'm handing it to you completely free. Whether you've never placed a trade or you've been stuck for years — this is where that changes.</p>
+        <div class="hero-cta-group">
+          <a href="https://t.me/+qgTfmeQD1uIyN2Nk" target="_blank" class="btn-main">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+            Claim Your Free 30-Day Trial
+          </a>
+          <div class="spots-block">
+            <div class="spots-row"><div class="spots-lbl"><span class="w">⚠</span> Spots filling fast</div><div class="spots-num">4,800 / 5,000 claimed</div></div>
+            <div class="spots-track"><div class="spots-fill" data-w="96"></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-right">
+        <div class="hero-video-glow">
+          <div class="video-frame">
+            <div class="vk a"></div><div class="vk b"></div><div class="vk c"></div><div class="vk d"></div>
+            <video playsinline controls preload="metadata"><source src="your-video.mp4" type="video/mp4"></video>
+          </div>
+          <div class="video-meta">
+            <div class="vmeta"><em>⏱</em> 4 min watch</div>
+            <div class="vmeta"><em>📊</em> Real trades shown</div>
+            <div class="vmeta"><em>🔒</em> No email needed</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT YOU GET -->
+<section class="sec alt" id="features">
+  <div class="container">
+    <div class="feat-header">
+      <span class="sec-tag r">What You Get</span>
+      <h2 class="sec-h r">Insight of a <span class="a">7-Figure Trader</span></h2>
+      <p class="sec-body r">Everything inside — no upsells, no paywalls.</p>
+    </div>
+    <div class="feat-grid">
+      <div class="feat-card r" data-d="1">
+        <div class="feat-ico"><svg viewBox="0 0 24 24"><path d="M4 19V7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12M4 19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2M4 19H2M20 19h2M9 5v14M15 5v14"/></svg></div>
+        <h3>The Free Course</h3>
+        <p>The exact step-by-step system T Marz used to go from a 9-5 to full financial freedom.</p>
+        <div class="feat-free">✓ 100% Free</div>
+      </div>
+      <div class="feat-card r" data-d="1">
+        <div class="feat-ico"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+        <h3>Daily Trade Breakdowns</h3>
+        <p>Every setup. Every entry. Every reason why — copy/paste simple or full technical depth.</p>
+      </div>
+      <div class="feat-card r" data-d="2">
+        <div class="feat-ico"><svg viewBox="0 0 24 24"><path d="M17 8h2a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-2v4l-4-4H9a2 2 0 0 1-2-2v-1M3 6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H7l-4 4V6z"/></svg></div>
+        <h3>5,000+ Member Group</h3>
+        <p>A live community of real traders. Ask questions, share wins, stay accountable daily.</p>
+      </div>
+      <div class="feat-card r" data-d="2">
+        <div class="feat-ico"><svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg></div>
+        <h3>Video Training Library</h3>
+        <p>On-demand foundational videos. Watch once or ten times — always accessible.</p>
+      </div>
+      <div class="feat-card r" data-d="3">
+        <div class="feat-ico"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+        <h3>1:1 Mentoring Access</h3>
+        <p>Direct access to T Marz. Limited spots — for those serious about moving fast.</p>
+      </div>
+      <div class="feat-card r" data-d="3">
+        <div class="feat-ico"><svg viewBox="0 0 24 24"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg></div>
+        <h3>24/7 Support Team</h3>
+        <p>Someone's always on. No question left unanswered, ever.</p>
+      </div>
+    </div>
+    <div class="feat-cta-row r">
+      <a href="https://t.me/+qgTfmeQD1uIyN2Nk" target="_blank" class="btn-main">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+        Claim Your Free 30-Day Trial
+      </a>
+      <div class="spots-block">
+        <div class="spots-row"><div class="spots-lbl"><span class="w">⚠</span> Spots filling fast</div><div class="spots-num">4,800 / 5,000 claimed</div></div>
+        <div class="spots-track"><div class="spots-fill" data-w="96"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="sec" id="about">
+  <div class="container">
+    <span class="sec-tag r">About</span>
+    <h2 class="sec-h r">The Person Behind It</h2>
+    <div class="about-card r">
+      <img class="about-img" src="tmarz.jpeg" alt="T Marz — Trader, Dubai" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="about-img-err">👤</div>
+      <div class="about-body">
+        <div class="about-top">
+          <div>
+            <div class="about-name">T Marz</div>
+            <div class="about-role">Trader <div class="dot"></div> Entrepreneur <div class="dot"></div> Dubai 🇦🇪</div>
+          </div>
+          <div class="about-badge">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            7-Figure Trader
+          </div>
+        </div>
+        <p>T Marz turned a disciplined, repeatable system into a life most people only dream about — <strong>now based in Dubai</strong>, trading on his own terms and showing others the exact path he took.</p>
+        <p>Today he leads a community of over <strong>5,000 traders</strong> who value real results over hype. No noise. No fluff. Just what works.</p>
+        <div class="about-quote">"You can't fail if you never give up."</div>
+        <div class="about-stats">
+          <div class="a-stat"><div class="a-stat-n">7fig</div><div class="a-stat-l">Trader</div></div>
+          <div class="a-stat"><div class="a-stat-n">5k+</div><div class="a-stat-l">Members</div></div>
+          <div class="a-stat"><div class="a-stat-n">&lt;2yr</div><div class="a-stat-l">9-5 to Free</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-sec alt">
+  <div class="container">
+    <div class="final-inner r">
+      <h2 class="sec-h">Ready to Make Trading<br><span class="a">Your Biggest Income Source?</span></h2>
+      <p class="sec-body">Join 5,000+ traders already inside. Free forever. No card needed.</p>
+      <div class="final-cta-group">
+        <a href="https://t.me/+qgTfmeQD1uIyN2Nk" target="_blank" class="btn-main">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+          Claim Your Free 30-Day Trial
+        </a>
+        <div class="spots-block">
+          <div class="spots-row"><div class="spots-lbl"><span class="w">⚠</span> Spots filling fast</div><div class="spots-num">4,800 / 5,000 claimed</div></div>
+          <div class="spots-track"><div class="spots-fill" data-w="96"></div></div>
+        </div>
+        <div class="trust-row">
+          <div class="trust-item"><span>✓</span> 100% Free</div>
+          <div class="trust-item"><span>✓</span> Instant Access</div>
+          <div class="trust-item"><span>✓</span> No Credit Card</div>
+          <div class="trust-item"><span>✓</span> Leave Anytime</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="foot-logo">T<span>Marz</span></div>
+    <p>© 2026 T Marz. All Rights Reserved.</p>
+  </div>
+</footer>
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+  setTimeout(()=>document.querySelectorAll('.spots-fill').forEach(el=>el.style.width=el.dataset.w+'%'),500);
+});
+const obs=new IntersectionObserver(e=>e.forEach(e=>{if(e.isIntersecting)e.target.classList.add('on')}),{threshold:.08});
+document.querySelectorAll('.r').forEach(el=>obs.observe(el));
+document.querySelectorAll('.feat-card').forEach(c=>{
+  c.addEventListener('mousemove',e=>{
+    const r=c.getBoundingClientRect();
+    c.style.setProperty('--mx',((e.clientX-r.left)/r.width*100)+'%');
+    c.style.setProperty('--my',((e.clientY-r.top)/r.height*100)+'%');
+  });
+});
+const TD=[
+  {i:'🇦🇪',t:'Khalid from Dubai',s:'just joined the free group'},
+  {i:'🇬🇧',t:'James from London',s:'just claimed a free spot'},
+  {i:'🇸🇦',t:'Faisal from Riyadh',s:'just joined the free group'},
+  {i:'🇮🇳',t:'Rahul from Mumbai',s:'just claimed a free spot'},
+  {i:'🇵🇰',t:'Ali from Karachi',s:'just joined the free group'},
+  {i:'🇺🇸',t:'Mike from New York',s:'just claimed a free spot'},
+  {i:'🇦🇺',t:'Chris from Sydney',s:'just joined the free group'},
+  {i:'🇨🇦',t:'Ryan from Toronto',s:'just claimed a free spot'},
+];
+const TC=document.getElementById('toasts');let ti=0;
+function showToast(){
+  const d=TD[ti%TD.length];ti++;
+  const el=document.createElement('div');el.className='toast';
+  el.innerHTML=`<div class="t-ico">${d.i}</div><div class="t-body"><strong>${d.t}</strong><span>${d.s}</span></div>`;
+  TC.appendChild(el);setTimeout(()=>el.classList.add('show'),30);
+  setTimeout(()=>{el.classList.remove('show');setTimeout(()=>el.remove(),400)},4200);
+}
+setTimeout(()=>{showToast();setInterval(showToast,5000)},2000);
+</script>
+</body>
+</html>
