@@ -189,6 +189,35 @@ footer p{font-size:.7rem;color:var(--muted)}
   .hero-right{max-width:900px}
   .about-img{width:440px;min-width:440px}
 }
+
+/* COLLAPSIBLE LEGAL */
+.legal-section{border-top:1px solid var(--b);padding:0}
+.legal-item{border-bottom:1px solid var(--b)}
+.legal-toggle{
+  width:100%;display:flex;align-items:center;justify-content:space-between;
+  padding:14px 0;background:none;border:none;cursor:pointer;
+  font-family:var(--body);font-size:.72rem;font-weight:600;
+  color:var(--muted);letter-spacing:.05em;text-transform:uppercase;
+  transition:color .2s;
+}
+.legal-toggle:hover{color:var(--txt)}
+.legal-arrow{
+  width:16px;height:16px;flex-shrink:0;
+  stroke:currentColor;fill:none;stroke-width:2;
+  stroke-linecap:round;stroke-linejoin:round;
+  transition:transform .3s;
+}
+.legal-item.open .legal-arrow{transform:rotate(180deg)}
+.legal-body{
+  display:none;padding-bottom:18px;
+}
+.legal-item.open .legal-body{display:block}
+.legal-body p,.legal-body address{
+  font-size:.71rem;color:var(--muted);line-height:1.72;
+  font-style:normal;margin-bottom:10px;
+}
+.legal-body p:last-child{margin-bottom:0}
+.legal-body a{color:var(--blue-l);text-decoration:underline}
 </style>
 </head>
 <body>
@@ -355,6 +384,40 @@ footer p{font-size:.7rem;color:var(--muted)}
 </section>
 
 <!-- FOOTER -->
+
+<!-- LEGAL -->
+<div class="legal-section">
+  <div class="container">
+
+    <div class="legal-item">
+      <button class="legal-toggle" onclick="toggleLegal(this)">
+        License
+        <svg class="legal-arrow" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="legal-body">
+        <p>The marketing and communication activity of the T Marz brand is managed by Fintech Media Advertising LTD, 237, 2/F Queen's Road Central, Sheung Wan, Hong Kong. The domain and the trademark are owned by Fintech Media Advertising LTD, 237, 2/F Queen's Road Central, Sheung Wan, Hong Kong.</p>
+        <p>Any dispute regarding alleged violations of the marketing activity carried out by Fintech Media Advertising LTD must be reported to <a href="mailto:info@fintechmedia.biz">info@fintechmedia.biz</a>. The rights and obligations of the parties under this agreement and any action or legal proceeding, whether directly or indirectly arising out of this contract, or connected to the transactions contemplated by the Contract itself, must be governed, interpreted and applied according to the laws of the state of Hong Kong SAR. Fintech Media Advertising LTD and the Client recover irrevocably to the exclusive jurisdiction of the courts of Hong Kong SAR.</p>
+        <p>T Marz is also a provider of strategies and signals for the copy trading services of Mordex Asset Management (hereinafter "MAM"), an investment firm authorized in Czech Republic, license number CNB (Czech National Bank): 19819145, and which performs asset management comparable to the management of investment funds pursuant to § 15 of Act No. 240/2013.</p>
+        <p>L&amp;T Capital Investment Ltd ("L&amp;T Capital") is authorised and regulated by the Financial Conduct Authority ("FCA") (FRN: 1038396). L&amp;T Capital provides non-discretionary, non-execution investment research and advisory services exclusively to professional clients and eligible counterparties within the meaning of the FCA Handbook.</p>
+        <p>T Marz is managed by MAM pursuant to the regulations applicable to copy trading/mirror trading services and according to ESMA Q&amp;A 2012/382, Question 9: Article 4(1)(9) of MIFID – AUTOMATIC EXECUTION OF TRADING SIGNALS. License number CNB (Czech National Bank): 19819145.</p>
+        <p>T Marz is a brand owned by Fintech Media Advertising LTD, 237, 2/F Queen's Road Central, Sheung Wan, Hong Kong. Fintech Media Advertising can be contacted at <a href="mailto:info@fintechmedia.biz">info@fintechmedia.biz</a>.</p>
+      </div>
+    </div>
+
+    <div class="legal-item">
+      <button class="legal-toggle" onclick="toggleLegal(this)">
+        Disclaimer
+        <svg class="legal-arrow" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="legal-body">
+        <p>Risk warning: Trading forex is potentially high risk and may not be suitable for all investors. Only trade with money that you are prepared to lose. You must recognize that for factors outside your control you may lose all the money in your trading account.</p>
+        <p>T Marz takes no responsibility for loss incurred as a result of our trading signals. By joining our Group you acknowledge that we are not providing financial advice and that you are making the decision to copy our trades on your own account. We have no knowledge of the level of money you are trading with or the level of risk you are taking with each trade.</p>
+        <p>You must make your own financial decisions. We take no responsibility for money made or lost as a result of our signals or advice on forex-related products on this website or group in Telegram.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
 <footer>
   <div class="container">
     <div class="foot-logo">T<span>Marz</span></div>
@@ -375,6 +438,11 @@ document.querySelectorAll('.feat-card').forEach(c=>{
     c.style.setProperty('--my',((e.clientY-r.top)/r.height*100)+'%');
   });
 });
+
+function toggleLegal(btn){
+  const item = btn.closest('.legal-item');
+  item.classList.toggle('open');
+}
 </script>
 </body>
 </html>
