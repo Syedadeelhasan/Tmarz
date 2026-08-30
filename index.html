@@ -235,6 +235,19 @@ footer p{font-size:.7rem;color:var(--muted)}
 .lead-error.show{display:block}
 .lead-modal .btn-main{margin-top:4px;cursor:pointer;border:none;font-family:var(--h)}
 .lead-modal .btn-main:disabled{opacity:.6;cursor:not-allowed}
+
+/* LEAD MODAL — state views */
+.lead-view{display:none}
+.lead-modal[data-state="form"] .lead-view-form{display:block}
+.lead-modal[data-state="loading"] .lead-view-loading{display:flex;flex-direction:column;align-items:center;text-align:center;padding:18px 0 6px}
+.lead-modal[data-state="done"] .lead-view-done{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:6px 0}
+.lead-spinner{width:38px;height:38px;border:3px solid var(--b2);border-top-color:var(--blue-l);border-radius:50%;animation:leadspin .7s linear infinite;margin-bottom:16px}
+@keyframes leadspin{to{transform:rotate(360deg)}}
+.lead-view-loading p{font-size:.85rem;color:var(--muted)}
+.lead-check{width:52px;height:52px;border-radius:50%;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.35);color:#22C55E;font-size:1.5rem;font-weight:700;display:flex;align-items:center;justify-content:center}
+.lead-view-done h3{margin-top:2px}
+.lead-view-done p{font-size:.83rem;color:var(--muted);max-width:280px;margin-bottom:6px}
+.lead-view-done .btn-main{width:100%}
 </style>
 </head>
 <body>
@@ -451,24 +464,42 @@ footer p{font-size:.7rem;color:var(--muted)}
 
 <!-- LEAD CAPTURE MODAL -->
 <div class="lead-overlay" id="leadOverlay">
-  <div class="lead-modal">
+  <div class="lead-modal" id="leadModal" data-state="form">
     <div class="lead-close" id="leadClose" aria-label="Close">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </div>
-    <h3>Almost In 🎉</h3>
-    <p>Enter your name to grab your spot in the group.</p>
-    <form id="leadForm">
-      <div class="lead-field">
-        <label for="leadFirstName">First Name</label>
-        <input type="text" id="leadFirstName" autocomplete="given-name" required>
-      </div>
-      <div class="lead-field">
-        <label for="leadLastName">Last Name</label>
-        <input type="text" id="leadLastName" autocomplete="family-name" required>
-      </div>
-      <div class="lead-error" id="leadError">Please enter your first and last name.</div>
-      <button type="submit" class="btn-main" id="leadSubmit">Continue to Telegram →</button>
-    </form>
+
+    <!-- STATE 1: form -->
+    <div class="lead-view lead-view-form">
+      <h3>Almost In 🎉</h3>
+      <p>Enter your name to grab your spot in the group.</p>
+      <form id="leadForm">
+        <div class="lead-field">
+          <label for="leadFirstName">First Name</label>
+          <input type="text" id="leadFirstName" autocomplete="given-name" required>
+        </div>
+        <div class="lead-field">
+          <label for="leadLastName">Last Name</label>
+          <input type="text" id="leadLastName" autocomplete="family-name" required>
+        </div>
+        <div class="lead-error" id="leadError">Please enter your first and last name.</div>
+        <button type="submit" class="btn-main" id="leadSubmit">Continue to Telegram →</button>
+      </form>
+    </div>
+
+    <!-- STATE 2: loading -->
+    <div class="lead-view lead-view-loading">
+      <div class="lead-spinner"></div>
+      <p>Setting up your invite...</p>
+    </div>
+
+    <!-- STATE 3: thank you -->
+    <div class="lead-view lead-view-done">
+      <div class="lead-check">✓</div>
+      <h3>You're In! 🎉</h3>
+      <p>We just opened the Telegram group in a new tab. If it didn't pop up, tap below.</p>
+      <a href="#" id="leadTelegramLink" target="_blank" rel="noopener" class="btn-main">Open Telegram Group →</a>
+    </div>
   </div>
 </div>
 
@@ -529,14 +560,18 @@ const utmData = captureUTMs();
 
 // --- 3. Intercept every "Join Telegram" link on the page ---
 const leadOverlay = document.getElementById('leadOverlay');
+const leadModal = document.getElementById('leadModal');
 const leadForm = document.getElementById('leadForm');
 const leadFirstName = document.getElementById('leadFirstName');
 const leadLastName = document.getElementById('leadLastName');
 const leadError = document.getElementById('leadError');
 const leadSubmit = document.getElementById('leadSubmit');
 const leadClose = document.getElementById('leadClose');
+const leadTelegramLink = document.getElementById('leadTelegramLink');
+leadTelegramLink.href = TELEGRAM_URL;
 
 function openLeadModal(){
+  leadModal.dataset.state = 'form';
   leadError.classList.remove('show');
   leadForm.reset();
   leadOverlay.classList.add('open');
@@ -554,7 +589,11 @@ document.querySelectorAll(`a[href="${TELEGRAM_URL}"]`).forEach(a=>{
 });
 
 leadClose.addEventListener('click', closeLeadModal);
-leadOverlay.addEventListener('click', e=>{ if(e.target === leadOverlay) closeLeadModal(); });
+leadOverlay.addEventListener('click', e=>{
+  // Don't let an outside click dismiss it mid-flow (loading/done) — only
+  // the initial form state can be closed this way.
+  if(e.target === leadOverlay && leadModal.dataset.state === 'form') closeLeadModal();
+});
 
 leadForm.addEventListener('submit', (e)=>{
   e.preventDefault();
@@ -567,10 +606,7 @@ leadForm.addEventListener('submit', (e)=>{
   leadError.classList.remove('show');
 
   // Save the lead in the background — fire-and-forget. Tracking should never
-  // block or delay the join, and most Meta ad clicks land inside Facebook's/
-  // Instagram's in-app browser, which can kill pending requests the instant
-  // navigation starts. Kicking off the insert first (even though it won't
-  // always finish) beats not trying at all.
+  // block or delay the join.
   if(supabaseClient){
     supabaseClient.from('leads').insert([{
       first_name: firstName,
@@ -587,11 +623,16 @@ leadForm.addEventListener('submit', (e)=>{
     console.warn('Supabase not configured — lead not saved:', firstName, lastName, utmData);
   }
 
-  // Redirect in the SAME tab rather than window.open(..., '_blank'). Most
-  // Meta ad clicks land inside Facebook's/Instagram's in-app browser, where
-  // new-tab/window.open behavior is unreliable or silently blocked — a
-  // same-tab location change always works, in every browser context.
-  window.location.href = TELEGRAM_URL;
+  // 1s "joining" animation, then open Telegram in a NEW tab and swap the
+  // modal into a thank-you state. window.open here is still inside the
+  // original click's user-activation window in every mainstream browser,
+  // but some in-app browsers (Facebook/Instagram) block new tabs outright —
+  // that's exactly why the thank-you view also shows a manual link.
+  leadModal.dataset.state = 'loading';
+  setTimeout(()=>{
+    window.open(TELEGRAM_URL, '_blank', 'noopener');
+    leadModal.dataset.state = 'done';
+  }, 1000);
 });
 </script>
 </body>
