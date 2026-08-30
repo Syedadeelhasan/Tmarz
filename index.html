@@ -579,8 +579,18 @@ var SUPABASE_ANON = 'YOUR_SUPABASE_ANON_KEY';
 /* The real Telegram invite link — revealed after the form is submitted */
 var TELEGRAM_URL  = 'https://t.me/+qgTfmeQD1uIyN2Nk';
 
-/* ─── Supabase client ─── */
-var _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+/* ─── Supabase client — wrapped in try/catch so a bad URL or missing CDN
+       never crashes the rest of the page ─── */
+var _supabase = null;
+try {
+  if (typeof supabase !== 'undefined' &&
+      SUPABASE_URL  !== 'YOUR_SUPABASE_URL' &&
+      SUPABASE_ANON !== 'YOUR_SUPABASE_ANON_KEY') {
+    _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+  }
+} catch (e) {
+  console.warn('[TMarz] Supabase init failed:', e);
+}
 
 /* ─── Page-load animations ─── */
 window.addEventListener('DOMContentLoaded', function () {
@@ -638,7 +648,6 @@ document.addEventListener('keydown', function (e) {
 function openPopup() {
   overlay.classList.add('open');
   document.body.style.overflow = 'hidden';
-  /* Focus first field for accessibility */
   setTimeout(function () {
     document.getElementById('lc-first').focus();
   }, 60);
@@ -676,22 +685,20 @@ form.addEventListener('submit', async function (e) {
   submitBtn.disabled = true;
   submitBtn.textContent = 'Joining…';
 
-  try {
-    var result = await _supabase.from('leads').insert({
-      first_name: firstName,
-      last_name:  lastName,
-      source:     window.__utmSource   || null,
-      campaign:   window.__utmCampaign || null,
-      ad:         window.__utmAd       || null
-    });
-
-    if (result.error) {
-      /* Log for debugging but don't block the user — still send them to Telegram */
-      console.error('[TMarz] Supabase insert error:', result.error);
+  /* Write to Supabase only if the client is ready */
+  if (_supabase) {
+    try {
+      var result = await _supabase.from('leads').insert({
+        first_name: firstName,
+        last_name:  lastName,
+        source:     window.__utmSource   || null,
+        campaign:   window.__utmCampaign || null,
+        ad:         window.__utmAd       || null
+      });
+      if (result.error) console.error('[TMarz] Supabase insert error:', result.error);
+    } catch (err) {
+      console.error('[TMarz] Supabase request failed:', err);
     }
-  } catch (err) {
-    /* Network failure etc — still redirect so the user isn't blocked */
-    console.error('[TMarz] Supabase request failed:', err);
   }
 
   /* Redirect to Telegram regardless of DB outcome */
